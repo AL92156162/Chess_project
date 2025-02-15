@@ -4,46 +4,16 @@
 //#include "Magic_number.hpp"
 #include "Moves.hpp"
 #include "Utility.hpp"
+#include <chrono>
+#include <thread>
 
-//int RBits2[64] = {
-//  12, 11, 11, 11, 11, 11, 11, 12,
-//  11, 10, 10, 10, 10, 10, 10, 11,
-//  11, 10, 10, 10, 10, 10, 10, 11,
-//  11, 10, 10, 10, 10, 10, 10, 11,
-//  11, 10, 10, 10, 10, 10, 10, 11,
-//  11, 10, 10, 10, 10, 10, 10, 11,
-//  11, 10, 10, 10, 10, 10, 10, 11,
-//  12, 11, 11, 11, 11, 11, 11, 12
-//};
-//
-//int BBits2[64] = {
-//  6, 5, 5, 5, 5, 5, 5, 6,
-//  5, 5, 5, 5, 5, 5, 5, 5,
-//  5, 5, 7, 7, 7, 7, 5, 5,
-//  5, 5, 7, 9, 9, 7, 5, 5,
-//  5, 5, 7, 9, 9, 7, 5, 5,
-//  5, 5, 7, 7, 7, 7, 5, 5,
-//  5, 5, 5, 5, 5, 5, 5, 5,
-//  6, 5, 5, 5, 5, 5, 5, 6
-//};
-//
-//uint64_t getRookMoves(uint64_t x, uint64_t y) {
-//	uint64_t rook_move = 0;
-//	//rook_move << y * 8 + x;
-//
-//	for (uint64_t i = 1; i < 7; ++i) {
-//		uint64_t moveh = 1;
-//		moveh = moveh << (y * 8 + i);
-//		rook_move |= moveh;
-//
-//		uint64_t movev = 1;
-//		movev = movev << (i * 8 + x);
-//		rook_move |= movev;
-//
-//	}
-//
-//	return rook_move;
-//}
+// FEN dedug positions
+#define empty_board "8/8/8/8/8/8/8/8 w - - "
+#define start_position "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 "
+#define tricky_position "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 "
+#define killer_position "rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1"
+#define cmk_position "r2q1rk1/ppp2ppp/2n1bn2/2b1p3/3pP3/3P1NPP/PPP1NPB1/R1BQ1RK1 b - - 0 9 "
+#define kiwipete_position "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - "
 
 int main(){
 
@@ -63,14 +33,35 @@ int main(){
 
 	MagicNumbersTest();
 
-	moveTest();*/
+	*/
+
+	//moveTest();
 
 	//boardTest();
+	
+	//isAttackedTest();
 
-	Moves m;
+	//MoveGenerationTest();
 
-	//m.initAll();
+	//copyTakeBackTest();
 
+	//makeMoveTest();
+	
+	perftTest(start_position, 4);
+
+	//perftTest(kiwipete_position, 5);
+
+	//perftTest("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/1R2K2R b K-kq - ", 3);
+
+	//perftTest("r3k2r/p2pqpb1/bn2pnp1/2pPN3/1p2P3/2N2Q1p/PPPBBPPP/1R2K2R w K-kq c6 ", 2);
+
+	//perftTest("r3k2r/p1ppqpb1/bnN1pnp1/3P4/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b KQkq - ", 1);
+	
+
+	//perftTest("r3k2r/p1ppqpb1/bn2pnp1/3PN3/Pp2P3/2N2Q1p/1PPBBPPP/R3K2R b KQkq a3 ", 2);
+
+	//perftTest("r3k2r/p1ppqpb1/bn2pnp1/3PN3/4P3/p1N2Q1p/1PPBBPPP/R3K2R w KQkq - ", 1);
+	
 
 	//printBitboard(i);
 	//printBitboard(i & 0xFFFF);

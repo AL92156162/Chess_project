@@ -1,11 +1,12 @@
 #pragma once
 #include <cstdint>
 #include <iostream>
+#include <vector>
 
 class Moves {
 
     // bishop relevant occupancy bit count for every square on board
-    const int bishop_relevant_bits[64] = {
+    const uint16_t m_bishop_relevant_bits[64] = {
         6, 5, 5, 5, 5, 5, 5, 6,
         5, 5, 5, 5, 5, 5, 5, 5,
         5, 5, 7, 7, 7, 7, 5, 5,
@@ -17,7 +18,7 @@ class Moves {
     };
 
     // rook relevant occupancy bit count for every square on board
-    const int rook_relevant_bits[64] = {
+    const uint16_t m_rook_relevant_bits[64] = {
         12, 11, 11, 11, 11, 11, 11, 12,
         11, 10, 10, 10, 10, 10, 10, 11,
         11, 10, 10, 10, 10, 10, 10, 11,
@@ -29,7 +30,7 @@ class Moves {
     };
 
     // rook magic numbers
-    uint64_t rook_magic_numbers[64] = {
+    uint64_t m_rook_magic_numbers[64] = {
         0x8a80104000800020ULL,
         0x140002000100040ULL,
         0x2801880a0017001ULL,
@@ -97,7 +98,7 @@ class Moves {
     };
 
     // bishop magic numbers
-    uint64_t bishop_magic_numbers[64] = {
+    uint64_t m_bishop_magic_numbers[64] = {
         0x40040844404084ULL,
         0x2004208a004208ULL,
         0x10190041080202ULL,
@@ -165,70 +166,79 @@ class Moves {
     };
 
 	// pawn attacks table [side][square]
-	uint64_t m_pawn_attacks[2][64];
+    uint64_t m_pawn_attacks[2][64] = {};
 
 	// knight attacks table [square]
-	uint64_t m_knight_attacks[64];
+	uint64_t m_knight_attacks[64] = {};
 
 	// king attacks table [square]
-	uint64_t m_king_attacks[64];
+	uint64_t m_king_attacks[64] = {};
 
     // bishop attack masks
-    uint64_t m_bishop_masks[64];
+    uint64_t m_bishop_masks[64] = {};
 
     // rook attack masks
-    uint64_t m_rook_masks[64];
+    uint64_t m_rook_masks[64] = {};
 
 	// bishop attacks table [square][occupancies]
-	uint64_t m_bishop_attacks[64][512];
+	//uint64_t m_bishop_attacks[64][512];
+    uint64_t *m_bishop_attacks_ptr = nullptr;
 
 	// rook attacks rable [square][occupancies]
-    uint64_t ** m_rook_attacks_ptr;
-	//uint64_t m_rook_attacks[64][4096];
+    //uint64_t* m_rook_attacks[64][4096];
+    uint64_t *m_rook_attacks_ptr = nullptr;
+
 
 public:
 
 	Moves() {
-        std::cout << "Moves class created" << std::endl;
+        m_bishop_attacks_ptr = new uint64_t[64 * 512];
+        m_rook_attacks_ptr = new uint64_t[64 * 4096];
 	}
+
+    ~Moves() {
+        if (m_rook_attacks_ptr != nullptr) {
+            delete m_bishop_attacks_ptr;
+            delete m_rook_attacks_ptr;
+        }
+    }
 
     void initLeapersAttacks();
     void initSlidersAttacks(int bishop);
     void initAll();
+    void initMagicNumbers();
+
+    uint64_t getPawnAttacks(int side, uint8_t square);
+
+    uint64_t getKnightAttacks(uint8_t square);
+
+    uint64_t getKingAttacks(uint8_t square);
+
+    uint64_t getBishopAttacks(uint8_t square, uint64_t occupancy);
+
+    uint64_t getRookAttacks(uint8_t square, uint64_t occupancy);
+
+    uint64_t getQueenAttacks(uint8_t square, uint64_t occupancy);
 
 };
 
-uint64_t maskPawnAttacks(bool side, uint64_t square);
+uint64_t maskPawnAttacks(bool side, uint8_t square);
 
-uint64_t maskKnightAttacks(uint64_t square);
+uint64_t maskKnightAttacks(uint8_t square);
 
-uint64_t maskKingAttacks(uint64_t square);
+uint64_t maskKingAttacks(uint8_t square);
 
-uint64_t maskBishopAttacks(uint64_t square);
+uint64_t maskBishopAttacks(uint8_t square);
 
-uint64_t maskRookAttacks(uint64_t square);
+uint64_t maskRookAttacks(uint8_t square);
 
-uint64_t rookAttacksOnTheFly(uint64_t square, uint64_t block);
+uint64_t rookAttacksOnTheFly(uint8_t square, uint64_t block);
 
-uint64_t bishopAttacksOnTheFly(uint64_t square, uint64_t block);
+uint64_t bishopAttacksOnTheFly(uint8_t square, uint64_t block);
 
 uint64_t set_occupancy(int index, int bits_in_mask, uint64_t attack_mask);
 
 uint64_t findMagicNumber(int square, int relevant_bits, int bishop);
-
-//void initLeapersAttacks();
-
-//void initSlidersAttacks(int bishop);
-
-void initMagicNumbers();
-
-//void initAll();
-
-static inline uint64_t getBishopAttacks(int square, uint64_t occupancy);
-
-static inline uint64_t getRookAttacks(int square, uint64_t occupancy);
-
-static inline uint64_t getQueenAttacks(int square, uint64_t occupancy);
 
 void MagicNumbersTest();
 

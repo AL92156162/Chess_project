@@ -1,22 +1,18 @@
 #include "Utility.hpp"
 #include <cstdint>
 #include <iostream>
+#include <chrono>
 
-uint64_t set_bit(uint64_t b, uint64_t i) {
-	return (b) |= (1ULL << i);
-}
-
-uint64_t get_bit(uint64_t b, uint64_t i) {
-	return (b) & (1ULL << i);
-}
-
-#define pop_bit(bitboard, square) (get_bit(bitboard, square) ? bitboard ^= (1ULL << square) : 0)
+// set/get/pop bit macros
+#define set_bit(bitboard, square) ((bitboard) |= (1ULL << (square)))
+#define get_bit(bitboard, square) ((bitboard) & (1ULL << (square)))
+#define pop_bit(bitboard, square) ((bitboard) &= ~(1ULL << (square)))
 
 // count bits within a bitboard (Brian Kernighan's way)
-int count_bits(uint64_t bitboard)
+uint8_t count_bits(uint64_t bitboard)
 {
 	// bit counter
-	int count = 0;
+	uint8_t count = 0;
 	// consecutively reset least significant 1st bit
 	while (bitboard)
 	{
@@ -30,7 +26,7 @@ int count_bits(uint64_t bitboard)
 }
 
 //// get least significant 1st bit index
-uint64_t get_ls1b_index(uint64_t bitboard) {
+uint8_t get_ls1b_index(uint64_t bitboard) {
 	return _tzcnt_u64(bitboard);
 }
 
@@ -76,4 +72,14 @@ void printBitboard(uint64_t bitboard) {
 
 	// print bitboard as unsigned decimal number
 	printf("     Bitboard: %llud\n\n", bitboard);
+}
+
+// get time in milliseconds
+uint64_t get_time_ms(){
+	auto now = std::chrono::high_resolution_clock::now();
+	auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
+
+	auto value = now_ms.time_since_epoch();
+	uint64_t time = value.count();
+	return time;
 }
